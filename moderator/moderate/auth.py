@@ -1,6 +1,8 @@
 from django.conf import settings
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 
+from moderator.moderate.utils import is_legacy_username, suggest_username
+
 
 class ModeratorAuthBackend(OIDCAuthenticationBackend):
     """Override base authentication class."""
@@ -22,11 +24,11 @@ class ModeratorAuthBackend(OIDCAuthenticationBackend):
     def update_user(self, user, claims):
         # Update user status (nda, staff based on assertions)
         profile = user.userprofile
-        if username := claims.get("uid"):
-            user.username = username
         email = claims.get("email")
         if email and user.email != email:
             user.email = email
+        if is_legacy_username(user.username):
+            user.username = suggest_username(user.email)
         profile.avatar_url = claims.get("avatar", "")
         user.save()
 

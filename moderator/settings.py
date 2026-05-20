@@ -225,17 +225,9 @@ CONTENT_SECURITY_POLICY = {
 
 # Django OIDC
 def _username_algo(email):
-    import base64
-    import hashlib
+    from moderator.moderate.utils import suggest_username
 
-    try:
-        from django.utils.encoding import smart_bytes
-    except ImportError:
-        from django.utils.encoding import smart_str as smart_bytes
-
-    return base64.urlsafe_b64encode(hashlib.sha1(smart_bytes(email)).digest()).rstrip(
-        b"="
-    )
+    return suggest_username(email)
 
 
 OIDC_OP_AUTHORIZATION_ENDPOINT = config("OIDC_OP_AUTHORIZATION_ENDPOINT", default="")
