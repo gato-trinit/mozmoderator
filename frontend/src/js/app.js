@@ -67,12 +67,13 @@ function init() {
     });
 
     const moderateForm = document.getElementById('moderate-form');
+    const moderateBaseAction = moderateForm ? moderateForm.getAttribute('action') : null;
     document.querySelectorAll('.moderate-button').forEach((btn) => {
         btn.addEventListener('click', () => {
             if (moderateForm) {
                 moderateForm.setAttribute(
                     'action',
-                    `${moderateForm.getAttribute('action')}${btn.id}/rejected`,
+                    `${moderateBaseAction}${btn.id}/rejected`,
                 );
             }
         });
